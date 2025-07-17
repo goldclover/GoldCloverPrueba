@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎰 Acceso VIP Exclusivo</title>
+  <meta name="description" content="Super bono exclusivo para nuevos usuarios. ¡Solicítalo ahora por WhatsApp!" />
+  <meta property="og:title" content="Acceso VIP - Bono Especial" />
+  <meta property="og:image" content="bonus.png" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="favicon.ico" />
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="/logo.png" alt="Casino VIP" onerror="this.style.display='none'" />
+    </div>
+    <h1>ACCESO VIP EXCLUSIVO</h1>
+    <h2 class="bonus">🎁 SUPER BONO ACTIVO 🎁</h2>
+    <p class="cta">Solicítalo ahora tocando el botón</p>
+    <a id="whatsapp-btn" href="https://wa.me/549XXXXXXXXXX" target="_blank">
+      <img src="/whatsapp-icon.png" alt="WhatsApp" class="icon" />
+      Obtener Bono
+    </a>
+  </div>
+
+  <script>
+    const META_PIXEL_ID = 'TU_PIXEL_ID'; // Cambia esto en vercel.json/env
+    const ACCESS_TOKEN = 'TU_ACCESS_TOKEN'; // Configurado en backend/.env
+
+    function getCookie(name) {
+      const v = `; ${document.cookie}`;
+      const parts = v.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function sendMetaEvent() {
+      const eventId = 'ev_' + Date.now();
+      fbq('track', 'Lead', { value: 1.0, currency: 'USD' }, { eventID: eventId });
+
+      const body = {
+        event_name: 'Lead',
+        event_id: eventId,
+        fbp: getCookie('_fbp') || '',
+        fbc: getCookie('_fbc') || '',
+        user_agent: navigator.userAgent,
+        event_time: Math.floor(Date.now() / 1000),
+        event_source_url: window.location.href,
+        currency: 'USD',
+        value: 1.0
+      };
+
+      fetch('/api/facebook-conversion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+        .then(res => res.json())
+        .then(res => console.log('Evento enviado:', res))
+        .catch(err => console.error('Error al enviar evento:', err));
+    }
+
+    document.getElementById('whatsapp-btn').addEventListener('click', function (e) {
+      sendMetaEvent();
+    });
+
+    // Protección anti-copia básica
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && ['c', 'v', 'u'].includes(e.key)) e.preventDefault();
+    });
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'TU_PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+</body>
+</html>
