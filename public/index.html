@@ -8,19 +8,34 @@
   <meta property="og:title" content="Acceso VIP - Bono Especial" />
   <meta property="og:image" content="bonus.png" />
   <link rel="stylesheet" href="/style.css" />
-  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="/favicon.ico" />
 </head>
 <body>
+  <!-- Banner de oferta por tiempo limitado -->
+  <div class="offer-banner">
+    ¡OFERTA POR TIEMPO LIMITADO!
+  </div>
+
   <div class="container">
     <div class="logo">
       <img src="/logo.png" alt="Casino VIP" onerror="this.style.display='none'" />
     </div>
+    
     <h1>ACCESO VIP EXCLUSIVO</h1>
-    <h2 class="bonus">🎁 SUPER BONO ACTIVO 🎁</h2>
-    <p class="cta">Solicítalo ahora tocando el botón</p>
+    
+    <div class="bonus">
+      ¡SUPER BONO EN TU PRIMER DEPÓSITO!
+    </div>
+    
+    <div class="highlight">
+      RETIROS TODO EL DÍA
+    </div>
+    
+    <p class="cta">Escribinos apretando el botón de abajo</p>
+    
     <a id="whatsapp-btn" href="https://wa.me/549XXXXXXXXXX" target="_blank">
       <img src="/whatsapp-icon.png" alt="WhatsApp" class="icon" />
-      Obtener Bono
+      OBTENER MI BONO AHORA
     </a>
   </div>
 
@@ -69,6 +84,23 @@
     document.addEventListener('keydown', e => {
       if (e.ctrlKey && ['c', 'v', 'u'].includes(e.key)) e.preventDefault();
     });
+
+    // Generar partículas doradas
+    function createSparkle() {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = Math.random() * 100 + '%';
+      sparkle.style.animationDelay = Math.random() * 3 + 's';
+      sparkle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 8000);
+    }
+
+    // Crear partículas cada 500ms
+    setInterval(createSparkle, 500);
   </script>
 
   <!-- Meta Pixel -->
