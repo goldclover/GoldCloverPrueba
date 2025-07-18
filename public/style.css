@@ -10,9 +10,12 @@ body {
   background-attachment: fixed;
   color: #fff;
   text-align: center;
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Fondo estrellado sutil */
