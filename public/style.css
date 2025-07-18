@@ -4,10 +4,10 @@
   box-sizing: border-box;
 }
 
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-  background-attachment: fixed;
+  background: linear-gradient(135deg, #2d1b69 0%, #11001c 50%, #000000 100%);
   color: #fff;
   text-align: center;
   height: 100vh;
@@ -16,27 +16,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Fondo estrellado sutil */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
-              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-              radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 100px 100px, 150px 150px, 200px 200px;
-  animation: twinkle 10s linear infinite;
-  z-index: -1;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
 }
 
 /* Banner de oferta por tiempo limitado */
