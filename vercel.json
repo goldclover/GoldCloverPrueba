@@ -6,6 +6,23 @@
       "dest": "/api/$1.js"
     },
     {
+      "src": "/style.css",
+      "headers": {
+        "Content-Type": "text/css",
+        "Cache-Control": "public, max-age=31536000",
+        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff"
+      }
+    },
+    {
+      "src": "\\.(png|jpe?g|ico|svg)$",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000",
+        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff"
+      }
+    },
+    {
       "src": "/(.*)",
       "headers": {
         "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
@@ -13,9 +30,9 @@
         "X-Frame-Options": "DENY",
         "X-XSS-Protection": "1; mode=block",
         "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
-      },
-      "dest": "/index.html"
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
     }
   ]
 }
