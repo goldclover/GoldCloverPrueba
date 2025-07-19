@@ -57,24 +57,66 @@
   </div>
 
   <script>
-    const META_PIXEL_ID = 'TU_PIXEL_ID'; // Cambia esto en vercel.json/env
-    const ACCESS_TOKEN = 'TU_ACCESS_TOKEN'; // Configurado en backend/.env
-
     function getCookie(name) {
       const v = `; ${document.cookie}`;
       const parts = v.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    // Esperar a que el pixel se inicialice completamente
+    function waitForFbq(callback) {
+      if (typeof fbq !== 'undefined') {
+        callback();
+      } else {
+        setTimeout(() => waitForFbq(callback), 100);
+      }
     }
 
     function sendMetaEvent() {
-      const eventId = 'ev_' + Date.now();
-      fbq('track', 'Lead', { value: 1.0, currency: 'USD' }, { eventID: eventId });
+      console.log('Iniciando envío de evento...');
+      
+      const eventId = 'ev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
+      // Enviar evento via pixel browser
+      waitForFbq(() => {
+        fbq('track', 'Lead', { 
+          value: 1.0, 
+          currency: 'USD',
+          content_name: 'VIP Casino Signup'
+        }, { 
+          eventID: eventId 
+        });
+        console.log('Evento enviado via pixel browser con ID:', eventId);
+      });
 
+      // Obtener cookies de Facebook
+      const fbp = getCookie('_fbp');
+      const fbc = getCookie('_fbc');
+      
+      console.log('Cookies encontradas:', { fbp, fbc });
+
+      // Si no hay cookies, esperar un poco más
+      if (!fbp && !fbc) {
+        console.warn('No se encontraron cookies de Facebook. Reintentando en 2 segundos...');
+        setTimeout(() => {
+          const retryFbp = getCookie('_fbp');
+          const retryFbc = getCookie('_fbc');
+          console.log('Cookies en segundo intento:', { fbp: retryFbp, fbc: retryFbc });
+          sendServerSideEvent(eventId, retryFbp, retryFbc);
+        }, 2000);
+        return;
+      }
+
+      sendServerSideEvent(eventId, fbp, fbc);
+    }
+
+    function sendServerSideEvent(eventId, fbp, fbc) {
       const body = {
         event_name: 'Lead',
         event_id: eventId,
-        fbp: getCookie('_fbp') || '',
-        fbc: getCookie('_fbc') || '',
+        fbp: fbp || '',
+        fbc: fbc || '',
         user_agent: navigator.userAgent,
         event_time: Math.floor(Date.now() / 1000),
         event_source_url: window.location.href,
@@ -82,19 +124,44 @@
         value: 1.0
       };
 
-      fetch('../api/facebook-conversion', {
+      console.log('Enviando al servidor:', body);
+
+      fetch('/api/facebook-conversion', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
         body: JSON.stringify(body)
       })
-        .then(res => res.json())
-        .then(res => console.log('Evento enviado:', res))
-        .catch(err => console.error('Error al enviar evento:', err));
+        .then(res => {
+          console.log('Respuesta del servidor status:', res.status);
+          return res.json();
+        })
+        .then(res => {
+          console.log('Evento enviado exitosamente:', res);
+          if (res.error) {
+            console.error('Error en respuesta:', res.error);
+          }
+        })
+        .catch(err => {
+          console.error('Error al enviar evento:', err);
+        });
     }
 
     document.getElementById('whatsapp-btn').addEventListener('click', function (e) {
+      console.log('Click en botón WhatsApp detectado');
       sendMetaEvent();
     });
+
+    // Debug: Verificar cookies periódicamente
+    setInterval(() => {
+      const fbp = getCookie('_fbp');
+      const fbc = getCookie('_fbc');
+      if (fbp || fbc) {
+        console.log('Cookies actuales:', { fbp, fbc });
+      }
+    }, 5000);
 
     // Protección anti-copia básica
     document.addEventListener('contextmenu', e => e.preventDefault());
