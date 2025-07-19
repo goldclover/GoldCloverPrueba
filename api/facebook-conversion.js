@@ -75,15 +75,13 @@ export default async function handler(req, res) {
         },
         action_source: 'website'
       }
-    ],
-    // Agregar parámetros de test si estamos en desarrollo
-    test_event_code: process.env.NODE_ENV !== 'production' ? 'TEST12345' : undefined
+    ]
+    // SIN test_event_code - eventos van a producción
   };
 
   // Limpiar datos undefined
   if (!payload.data[0].user_data.fbp) delete payload.data[0].user_data.fbp;
   if (!payload.data[0].user_data.fbc) delete payload.data[0].user_data.fbc;
-  if (!payload.test_event_code) delete payload.test_event_code;
 
   console.log('Payload a enviar:', JSON.stringify(payload, null, 2));
 
